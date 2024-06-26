@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "cn2an"
+version = "0.6.0"
+description = ""
+authors = ["Ailln <kinggreenhall@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+opencc = "^1.1.7"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.2.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
