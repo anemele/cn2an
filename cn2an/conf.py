@@ -39,6 +39,10 @@ UNIT_LOW_AN2CN = {
     10000: "万",
     100000000: "亿",
 }
+
+NUMBER_LOW = '零一二三四五六七八九'
+NUMBER_UP = '零壹贰叁肆伍陆柒捌玖'
+
 NUMBER_LOW_AN2CN = {
     0: "零",
     1: "一",
