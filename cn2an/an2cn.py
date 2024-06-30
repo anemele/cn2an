@@ -44,9 +44,6 @@ class A2CMode(Enum):
     DIRECT = 'direct'
 
 
-NUMBER = "0123456789"
-
-
 def __direct_convert(data: str) -> str:
     # 0: 0x30
     tab = {i + 0x30: c for i, c in enumerate(NUMBER_LOW)}
@@ -76,19 +73,19 @@ def __integer_convert(data: str, mode: A2CMode) -> str:
     if len_integer_data > len(unit_list):
         raise ValueError(f"超出数据范围，最长支持 {len(unit_list)} 位")
 
-    output_an = ""
+    ret = ''
     for i, d in enumerate(data):
-        if int(d):
-            output_an += numeral_list[int(d)] + unit_list[len_integer_data - i - 1]
-        else:
-            if not (len_integer_data - i - 1) % 4:
-                output_an += numeral_list[int(d)] + unit_list[len_integer_data - i - 1]
+        if d != '0':
+            ret += numeral_list[d] + unit_list[len_integer_data - i - 1]
+            continue
+        if (len_integer_data - i - 1) % 4 == 0:
+            ret += numeral_list[d] + unit_list[len_integer_data - i - 1]
 
-            if i > 0 and not output_an[-1] == "零":
-                output_an += numeral_list[int(d)]
+        if i != 0 and ret[-1] != "零":
+            ret += numeral_list[d]
 
-    output_an = (
-        output_an.replace("零零", "零")
+    ret = (
+        ret.replace("零零", "零")
         .replace("零万", "万")
         .replace("零亿", "亿")
         .replace("亿万", "亿")
@@ -96,14 +93,14 @@ def __integer_convert(data: str, mode: A2CMode) -> str:
     )
 
     # 解决「一十几」问题
-    if output_an[:2] in {"一十"}:
-        output_an = output_an[1:]
+    if ret[:2] in {"一十"}:
+        ret = ret[1:]
 
     # 0 - 1 之间的小数
-    if not output_an:
-        output_an = "零"
+    if not ret:
+        ret = "零"
 
-    return output_an
+    return ret
 
 
 def __decimal_convert(data: str, mode: A2CMode) -> str:
@@ -119,7 +116,7 @@ def __decimal_convert(data: str, mode: A2CMode) -> str:
     else:
         raise ValueError(f"error mode: {mode}")
 
-    output = ''.join(numeral_list[int(bit)] for bit in data)
+    output = ''.join(numeral_list[bit] for bit in data)
 
     return output
 

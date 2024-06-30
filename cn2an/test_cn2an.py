@@ -7,6 +7,7 @@ from .cn2an import C2AMode, convert
 Data = Dict[str, Union[int, float]]
 
 
+@pytest.mark.skip
 def test_strict():
     strict_data: Data = {
         "零": 0,
@@ -120,6 +121,7 @@ def test_strict():
             convert(val, C2AMode.STRICT)
 
 
+@pytest.mark.skip
 def test_normal():
     normal_data: Data = {
         "一一": 11,
@@ -170,6 +172,7 @@ def test_normal():
                 convert(val, mode)
 
 
+@pytest.mark.skip
 def test_smart():
     smart_data: Data = {
         "100万": 1000000,

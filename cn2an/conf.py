@@ -20,11 +20,12 @@ UNIT_LOW_AN2CN = {
     100000000: "亿",
 }
 
+NUMBER_ARABIC = "0123456789"
 NUMBER_LOW = '零一二三四五六七八九'
 NUMBER_UP = '零壹贰叁肆伍陆柒捌玖'
 
-NUMBER_LOW_AN2CN = dict(enumerate(NUMBER_LOW))
-NUMBER_UP_AN2CN = dict(enumerate(NUMBER_UP))
+NUMBER_LOW_AN2CN = dict(zip(NUMBER_ARABIC, NUMBER_LOW))
+NUMBER_UP_AN2CN = dict(zip(NUMBER_ARABIC, NUMBER_UP))
 
 UNIT_LOW_ORDER_AN2CN = ',十,百,千,万,十,百,千,亿,十,百,千,万,十,百,千'.split(',')
 UNIT_UP_ORDER_AN2CN = ',拾,佰,仟,万,拾,佰,仟,亿,拾,佰,仟,万,拾,佰,仟'.split(',')
