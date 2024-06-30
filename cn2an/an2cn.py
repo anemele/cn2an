@@ -17,6 +17,11 @@ rmb 经过 up 转换，然后截取 dec_str 2 位，如果不为零，分别加�
 str 经过测试是数字
 然后如果是 int 数字则走 int
 是 float 数字则走 float
+
+注意：
+字符串比数字更精确，对于 '-0' , '1.10' 等情况如实生成，不作取舍，
+即 “负零” 、 “一点一零” 。
+但是对于人民币模式还是要取舍，包括小数截取两位、舍去尾零等。
 """
 
 from enum import Enum
@@ -91,7 +96,7 @@ def __integer_convert(data: str, mode: A2CMode) -> str:
     )
 
     # 解决「一十几」问题
-    if output_an[:2] in ["一十"]:
+    if output_an[:2] in {"一十"}:
         output_an = output_an[1:]
 
     # 0 - 1 之间的小数
@@ -123,11 +128,9 @@ def _process_sign(func: Callable[[str, A2CMode], str]):
     @wraps(func)
     def wrapper(data: str, mode: A2CMode) -> str:
         if data[0] == '-':
-            sign = '负'
-            data = data[1:]
-        else:
-            sign = ''
-        return sign + func(data, mode)
+            return '负' + func(data[1:], mode)
+
+        return func(data, mode)
 
     return wrapper
 
@@ -168,9 +171,12 @@ def _convert_float(data: str, mode: A2CMode) -> str:
 
         if len(int_part) == 0:
             for c, u in zip(dec_part, '角分'):
-                if c != '零':
-                    ret.append(c)
-                    ret.append(u)
+                if c == '零':
+                    continue
+                ret.append(c)
+                ret.append(u)
+            if len(ret) == 0:
+                return '零元整'
             return ''.join(ret)
 
         ret.append(int_part)
@@ -215,7 +221,8 @@ def convert(
     except TypeError:
         raise TypeError(f'不是支持的类型：{type(number)}')
 
-    if number.isdigit():
+    # 这里不能使用 str.isdigit 判断，因为负整数返回 False
+    if number.find('.') == -1:
         return _convert_integer(number, mode)
     else:
         return _convert_float(number, mode)
